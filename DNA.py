@@ -1,4 +1,5 @@
 import utils
+import adaptiveHuffman
 
 # transform bit to ATCG
 
@@ -6,25 +7,31 @@ TABLE = {"00" : "A",
          "01" : "G",
          "10" : "C",
          "11" : "T"}
+def compression(path):
+    Encoder=adaptiveHuffman.AdaptiveHuffman()
+    Encoder.encode(path,"compression.txt")
+    DNAFileEncryption("compressionBinary.txt")
 
 def DNAFileEncryption(path):
-    with open(path) as f:
-        lines = f.readlines()
-        for line in lines:
-            key, ciphertext = DNAEncryption(line)
-            utils.writeFile(key, "filekey.txt")
-            utils.writeFile(ciphertext, "filecipher.txt")
+    message=""
+    with open(path,"r") as f:
+        message=f.read()
+    key = utils.lfsr(len(message))
+    xor = utils.keyXor(keys=key, text=message)
+    output = ''.join(text for text in DNAEncode(xor))
+
+    with open("filekey.txt","w") as f:
+        f.write(key)
+    with open("filecipher.txt","w") as f:
+        f.write(output)
+
             
 def DNAFileDecryption(ciphertext_path, key_path):
-    plaintext = []
-    with open(ciphertext_path) as cipher_pointer, open(key_path) as key_pointer:
-        ciphertexts = cipher_pointer.readlines()
-        keys = key_pointer.readlines()
-        for ciphertext, key in zip(ciphertexts, keys):
-            ciphertext = ciphertext.replace("\n", "") 
-            key = key.replace("\n", "") 
-            plaintext.append(DNADecode(ciphertext=ciphertext, key=key, type="text"))
-    utils.overwriteFile(plaintext, "fileplain.txt")
+    plaintext = ""
+    with open(ciphertext_path,"r") as cipher_pointer, open(key_path,"r") as key_pointer:
+        ciphertexts = cipher_pointer.read()
+        keys = key_pointer.read()
+        DNADecode(ciphertext=ciphertexts, key=keys, type="text")
             
 def DNAEncryption(message):
     
@@ -61,8 +68,7 @@ def DNADecode(ciphertext, key, type):
     if type == "text":
         xored_binary = "".join(list(TABLE.keys())[list(TABLE.values()).index(dna)] for dna in ciphertext)
         binary = utils.keyXor(keys=key, text=xored_binary)
-        plaintext = utils.text_from_bits(bits=binary)
-        return plaintext
+        adaptiveHuffman.AdaptiveHuffman().decode(binary,"fileplain.txt")
 # test DNA.py
 if __name__ == '__main__':
     # after_xor_list = ['1', '1', '1', '0', '1', '1', '0', '0', '1', '0', '0', '0', '0', '1', '0', '1', '0', '0', '1', '1', '1', '0', '0', '1', '1', '1', '1', '1', '0', '1',
@@ -72,5 +78,6 @@ if __name__ == '__main__':
         # print(segment, end='')
     # DNADecode("GATCTTAGGACT", "001001101001010000111000", "text")
     # DNAFileEncryption("plaintext.txt")
+    compression("plaintext.txt")
     DNAFileDecryption("filecipher.txt", "filekey.txt")
     # print(DNADecode("GCGTTTGAGGTCGTAAGTTGGCGTGAGCTGGCAGGTTTCTGATAAGAT", "000011101101010000111010000111110001001100010011011001101011110101111001100101000011101100011001", "text"))
