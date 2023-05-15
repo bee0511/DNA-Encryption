@@ -80,7 +80,7 @@ def PictureDecryption(ciphertext_path, key_path):
 
 if __name__ == '__main__':
 
-    FileEncryption("plaintext.txt")
+    FileEncryption("fileplain.txt")
     Decryption("cipher.txt", "key.txt")
     # DNAFileEncryption("plaintext.txt")
     # DNAFileDecryption("filecipher.txt", "filekey.txt")
