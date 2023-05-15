@@ -1,4 +1,3 @@
-import bisect
 import queue
 
 class Node:
@@ -12,6 +11,16 @@ class Node:
     def is_leaf(self):
         return self.left_child is None and self.right_child is None
     
+
+def bisect(li,start,end,target):
+    if start==end:
+        return start
+    mid=(start+end)//2
+    if li[mid].weight>target:
+        return bisect(li,start,mid,target)
+    else:
+        return bisect(li,mid+1,end,target)
+
 
 class AdaptiveHuffman:
     def __init__(self):
@@ -37,7 +46,7 @@ class AdaptiveHuffman:
         if node.parent is None:
             node.weight+=1
             return
-        index=bisect.bisect_right(order,node.weight,key=lambda n: n.weight)-1
+        index=bisect(order,0,len(order),node.weight)-1
         while order[index].weight == node.weight:
             if order[index]==node.parent:
                 index-=1
