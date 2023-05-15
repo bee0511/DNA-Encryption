@@ -112,7 +112,7 @@ class AdaptiveHuffman:
                     fout.write(bits)
                     byte=fin.read(1)
             
-    def encode(self, input,output):
+    def encode(self, input, output):
         buffer=""
         with open(input,"rb") as fin:
             with open(output,"wb") as fout:
@@ -171,7 +171,7 @@ class AdaptiveHuffman:
    
 if __name__ == '__main__':
     Encoder=AdaptiveHuffman()
-    Encoder.encode("macbeth.txt","code.txt")
+    Encoder.encode("fileplain.txt","code.txt")
 
 
     Decoder=AdaptiveHuffman()

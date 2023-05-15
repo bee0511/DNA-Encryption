@@ -1,5 +1,8 @@
+import cv2
+import numpy as np
 import random
 import binascii
+import math
 
 def text_to_bits(text, encoding='utf-8', errors='surrogatepass'):
     bits = bin(int(binascii.hexlify(text.encode(encoding, errors)), 16))[2:]
@@ -54,5 +57,41 @@ def lfsr(n):
     # utils.writeFile(return_key, "key.txt")
     return return_key
 
+def diffPic(path):
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+
+    imgAlter = np.zeros(img.shape)
+    imgAlter[0][0] = img[0][0]
+    for i in range(1,img.shape[0]):
+        imgAlter[i][0] = (int(img[i][0]) - int(img[i-1][0])) % 256
+
+    for i in range(img.shape[0]):
+        for j in range(1,img.shape[1]):
+            imgAlter[i][j] = (int(img[i][j]) - int(img[i][j-1])) % 256
+
+    message = ""
+    message += str(imgAlter.shape[0]) + " " + str(imgAlter.shape[1]) + " "
+
+    for i in range(imgAlter.shape[0]):
+        for j in range(imgAlter.shape[1]):
+            message += str(math.trunc(imgAlter[i][j])) + " "
+
+    with open("image.txt", "w") as f:
+        f.write(message)
+
+def recoverDiffPic(imgAlter):
+    recoverFromDiff = np.zeros(imgAlter.shape)
+
+    recoverFromDiff[0][0]=imgAlter[0][0]
+    for i in range(1, imgAlter.shape[0]):
+        recoverFromDiff[i][0] = (int(imgAlter[i][0]) + int(recoverFromDiff[i-1][0])) % 256
+
+    for i in range(imgAlter.shape[0]):
+        for j in range(1,imgAlter.shape[1]):
+            recoverFromDiff[i][j] = (int(imgAlter[i][j]) + int(recoverFromDiff[i][j-1])) % 256
+
+    recoverFromDiff = recoverFromDiff.astype(np.uint8)
+    cv2.imwrite('DecodedResult.png',recoverFromDiff)
+
 if __name__ == '__main__':
-    print(lfsr(5))
+    diffPic("test.tiff")
