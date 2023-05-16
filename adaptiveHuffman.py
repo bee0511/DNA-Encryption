@@ -1,4 +1,7 @@
+import bisect
 import queue
+from tqdm import tqdm
+import os
 
 class Node:
     def __init__(self, symbol=None, weight=0):
@@ -11,16 +14,6 @@ class Node:
     def is_leaf(self):
         return self.left_child is None and self.right_child is None
     
-
-def bisect(li,start,end,target):
-    if start==end:
-        return start
-    mid=(start+end)//2
-    if li[mid].weight>target:
-        return bisect(li,start,mid,target)
-    else:
-        return bisect(li,mid+1,end,target)
-
 
 class AdaptiveHuffman:
     def __init__(self):
@@ -46,7 +39,7 @@ class AdaptiveHuffman:
         if node.parent is None:
             node.weight+=1
             return
-        index=bisect(order,0,len(order),node.weight)-1
+        index=bisect.bisect_right(order,node.weight,key=lambda n: n.weight)-1
         while order[index].weight == node.weight:
             if order[index]==node.parent:
                 index-=1
@@ -121,12 +114,15 @@ class AdaptiveHuffman:
                     fout.write(bits)
                     byte=fin.read(1)
             
-    def encode(self, input, output):
+    def compress(self, input, output):
         buffer=""
+        size = os.path.getsize(input)
+        progress = tqdm(total=size)
         with open(input,"rb") as fin:
             with open(output,"wb") as fout:
                 byte=fin.read(1)
                 while byte:
+                    progress.update(1)
                     bits = "{0:b}".format(ord(byte)).zfill(8)
                     buffer+= self._get_code(bits)
                     self._update_tree(bits)
@@ -140,14 +136,16 @@ class AdaptiveHuffman:
                     buffer+="00000000" #padding
                  
                     fout.write(bytes([int(buffer[:8],2)]))
-        self._toBinary(output,"compressionBinary.txt")
+        progress.close()
+        self._toBinary(output,"CompressionBinary.txt")
         print("Encode Done.")
-    def decode(self, input,output):
+
+    def expand(self, input,output):
         buffer=""
         times=int(len(input)/8)
         with open(output,"wb") as fout:
                 now=self.tree
-                for i in range(times):
+                for _ in tqdm(range(times)):
                     byte=input[:8]
                     input=input[8:]
                     buffer+=byte
@@ -180,11 +178,11 @@ class AdaptiveHuffman:
    
 if __name__ == '__main__':
     Encoder=AdaptiveHuffman()
-    Encoder.encode("fileplain.txt","code.txt")
+    Encoder.compress("fileplain.txt","code.txt")
 
 
     Decoder=AdaptiveHuffman()
-    Decoder.decode("code.txt","recover.txt")
+    Decoder.expand("code.txt","recover.txt")
 
 
 

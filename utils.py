@@ -4,31 +4,6 @@ import random
 import binascii
 import math
 
-def text_to_bits(text, encoding='utf-8', errors='surrogatepass'):
-    bits = bin(int(binascii.hexlify(text.encode(encoding, errors)), 16))[2:]
-    return bits.zfill(8 * ((len(bits) + 7) // 8))
-
-def int2bytes(i):
-    hex_string = '%x' % i
-    n = len(hex_string)
-    return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
-
-def text_from_bits(bits, encoding='utf-8', errors='surrogatepass'):
-    n = int(bits, 2)
-    return int2bytes(n).decode(encoding, errors)
-
-def overwriteFile(text, filename):
-    with open(filename, 'w') as cyphertext_output:
-        for letter in text:
-            cyphertext_output.write(letter)
-        # cyphertext_output.write('\n')
-
-def writeFile(text, filename):
-    with open(filename, 'a') as cyphertext_output:
-        for letter in text:
-            cyphertext_output.write(letter)
-        # cyphertext_output.write('\n')
-
 def keyXor(keys, text):
     return "".join(str(ord(key) - ord('0') ^ (ord(letter) - ord('0'))) for key, letter in zip(keys, text))
 
@@ -54,7 +29,6 @@ def lfsr(n):
                 seed[0] = new_bit
             else:
                 seed[shift] = seed[shift-1]
-    # utils.writeFile(return_key, "key.txt")
     return return_key
 
 def diffPic(path):
@@ -68,18 +42,12 @@ def diffPic(path):
     for i in range(img.shape[0]):
         for j in range(1,img.shape[1]):
             imgAlter[i][j] = (int(img[i][j]) - int(img[i][j-1])) % 256
+    
+    cv2.imwrite('ImgAlter.png', imgAlter)
 
-    message = ""
-    message += str(imgAlter.shape[0]) + " " + str(imgAlter.shape[1]) + " "
 
-    for i in range(imgAlter.shape[0]):
-        for j in range(imgAlter.shape[1]):
-            message += str(math.trunc(imgAlter[i][j])) + " "
-
-    with open("image.txt", "w") as f:
-        f.write(message)
-
-def recoverDiffPic(imgAlter):
+def recoverDiffPic(path):
+    imgAlter = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     recoverFromDiff = np.zeros(imgAlter.shape)
 
     recoverFromDiff[0][0]=imgAlter[0][0]
