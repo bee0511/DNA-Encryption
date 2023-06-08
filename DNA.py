@@ -43,19 +43,13 @@ def TextEncryption():
     FileEncryption("InputText.txt")
     os.remove("InputText.txt")
 
-def PictureEncryption(path):
-    utils.diffPic(path)
-    print("Start Encoding...")
-    FileEncryption("imgAlter.png")
-    os.remove("imgAlter.png")
-
 def Decode(ciphertext, key, type):
     xored_binary = "".join(list(TABLE.keys())[list(TABLE.values()).index(dna)] for dna in ciphertext)
     binary = utils.keyXor(keys=key, text=xored_binary)
     if type == "text":
         adaptiveHuffman.AdaptiveHuffman().expand(binary,"PlainTextResult.txt")
     elif type == "image": 
-        adaptiveHuffman.AdaptiveHuffman().expand(binary,"TempDecodedImage.png")
+        adaptiveHuffman.AdaptiveHuffman().expand(binary,"DecodedImage.png")
 
 def Decryption(ciphertext_path, key_path, type):
     print("Decrypting...")  
@@ -66,9 +60,6 @@ def Decryption(ciphertext_path, key_path, type):
             Decode(ciphertext=ciphertexts, key=keys, type="text")
         elif type == "image": 
             Decode(ciphertext=ciphertexts, key=keys, type="image")
-            print("Turning to image...")
-            utils.recoverDiffPic("TempDecodedImage.png")
-            os.remove("TempDecodedImage.png")
 
 
 if __name__ == '__main__':

@@ -31,35 +31,5 @@ def lfsr(n):
                 seed[shift] = seed[shift-1]
     return return_key
 
-def diffPic(path):
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-
-    imgAlter = np.zeros(img.shape)
-    imgAlter[0][0] = img[0][0]
-    for i in range(1,img.shape[0]):
-        imgAlter[i][0] = (int(img[i][0]) - int(img[i-1][0])) % 256
-
-    for i in range(img.shape[0]):
-        for j in range(1,img.shape[1]):
-            imgAlter[i][j] = (int(img[i][j]) - int(img[i][j-1])) % 256
-    
-    cv2.imwrite('ImgAlter.png', imgAlter)
-
-
-def recoverDiffPic(path):
-    imgAlter = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    recoverFromDiff = np.zeros(imgAlter.shape)
-
-    recoverFromDiff[0][0]=imgAlter[0][0]
-    for i in range(1, imgAlter.shape[0]):
-        recoverFromDiff[i][0] = (int(imgAlter[i][0]) + int(recoverFromDiff[i-1][0])) % 256
-
-    for i in range(imgAlter.shape[0]):
-        for j in range(1,imgAlter.shape[1]):
-            recoverFromDiff[i][j] = (int(imgAlter[i][j]) + int(recoverFromDiff[i][j-1])) % 256
-
-    recoverFromDiff = recoverFromDiff.astype(np.uint8)
-    cv2.imwrite('DecodedResult.png',recoverFromDiff)
-
 if __name__ == '__main__':
-    diffPic("test.tiff")
+    pass
