@@ -3,7 +3,7 @@
 
 授課教師 Lecturer：謝致仁
 
-授課時間 Semester：111-2 2022-23 Spring
+授課時間 Semester：111-2 2023 Spring
 # DNA Encryption
 
 ## Concept
