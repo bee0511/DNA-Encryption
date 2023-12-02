@@ -25,11 +25,10 @@ You can use `pip install -r requirements.txt` to install the packages
 ## How to Run
 
 
-1. Go to the ./src directory
+1. Navigate to the `./src` directory.
 2. Use `python main.py` to start the program
-3. Choose the mode you want (Encryption or decryption? Which kind or file? File path?...)
-4. The encrypted result and its key would be saved into cipher/Cipher.txt and key/Key.txt
+3. Choose the mode (encryption or decryption) and specify the file type and path.
+4. The encrypted result and its key would be saved into `cipher/Cipher.txt` and `key/Key.txt`
 5. If you want to decrypt the file with the key, you can also use `python main.py` to decrypt it.
 
->Note that if you encrypt the image and decrypt it, it would become gray image.  
->We didn't implement the full color result since the decrypt time will be too long.
+>**Note:** Decrypting an image will result in a grayscale image as full-color decryption is not implemented for efficiency reasons.
