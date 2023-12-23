@@ -24,9 +24,11 @@ if __name__ == "__main__":
                 print("File not found: " + file)
                 exit(1)
             DNA.FileEncryption(file)
-        print(
-            "You can find your cipher in '../cipher/Cipher.txt' and your key in '../key/Key.txt'"
-        )
+            print(
+                "You can find your cipher in '../cipher/Cipher.txt' and your key in '../key/Key.txt'"
+            )
+        else:
+            print("Invalid input!")
 
     if EncrypOrDecrypt == "2":
         ans = input(
@@ -60,3 +62,7 @@ if __name__ == "__main__":
                     DECRYPT_PATH + "DecodedImage.png"
                 )
             )
+        else:
+            print("Invalid input!")
+    else:
+        print("Invalid input!")

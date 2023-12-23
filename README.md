@@ -31,4 +31,3 @@ You can use `pip install -r requirements.txt` to install the packages
 4. The encrypted result and its key would be saved into `cipher/Cipher.txt` and `key/Key.txt`
 5. If you want to decrypt the file with the key, you can also use `python main.py` to decrypt it.
 
->**Note:** Decrypting an image will result in a grayscale image as full-color decryption is not implemented for efficiency reasons.
