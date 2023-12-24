@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     EncrypOrDecrypt = input(
         "Encrypt or decrypt a message?\nPress 1 for encryption, press 2 for decryption: "
-    )
+    ).strip()
 
     if EncrypOrDecrypt == "1":
         ans = input(
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         else:
             print("Invalid input!")
 
-    if EncrypOrDecrypt == "2":
+    elif EncrypOrDecrypt == "2":
         ans = input(
             "What do you want to decrypt? \nPress 1 for .txt file, press 2 for img file: "
         )

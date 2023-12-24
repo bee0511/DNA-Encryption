@@ -157,8 +157,7 @@ class AdaptiveHuffman:
     def expand(self, input, output):
         buffer = []
         times = int(len(input) / 8)
-        with open(output, "r+b") as f:
-            mm = mmap.mmap(f.fileno(), 0)
+        with open(output, "wb") as fout:
             now = self.tree
             for _ in tqdm(range(times)):
                 byte = list(input[:8])
@@ -173,23 +172,20 @@ class AdaptiveHuffman:
                                 buffer.extend(byte)
 
                             if len(buffer) >= self.symbol_length:
-                                symbol = ''.join(
-                                    map(str, buffer[:self.symbol_length]))
+                                symbol = ''.join(buffer[:self.symbol_length])
                                 buffer = buffer[self.symbol_length:]
                                 self._update_tree(symbol)
-                                mm.write(bytes([int(symbol, 2)]))
+                                fout.write(bytes([int(symbol, 2)]))
                                 now = self.tree
                         else:
                             symbol = now.symbol
                             self._update_tree(symbol)
-                            mm.write(bytes([int(symbol, 2)]))
+                            fout.write(bytes([int(symbol, 2)]))
                         now = self.tree
                     else:
                         now = now.left_child if buffer[0] == "0" else now.right_child
                         buffer = buffer[1:]
-            mm.close()
         print("Decode Done.")
-
 
 if __name__ == '__main__':
     Encoder = AdaptiveHuffman()
